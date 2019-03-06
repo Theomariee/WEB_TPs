@@ -2,6 +2,9 @@
 
 ## Slides
 
+* [HTTP(s), REST, WOA](https://slides.com/stephmichel/http#/)
+* [Node.js](https://slides.com/stephmichel/node-js#/)
+* [ES6](https://slides.com/stephmichel/ecmascript#/)
 * [Tools to work with](https://slides.com/stephmichel/deck-4#/11)
 
 ## ES6

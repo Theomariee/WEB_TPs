@@ -20,6 +20,7 @@
 
 * [Node.js Cheat sheets](http://overapi.com/nodejs)
 * [Node.js Cheat sheets with installation process (npm, ...)](https://nikgrozev.com/2017/01/22/node-js-cheatsheet-part-1/)
+* [Using async/await](https://blog.xebia.fr/2017/11/14/asyncawait-une-meilleure-facon-de-faire-de-lasynchronisme-en-javascript/)
 
 ## NPM
 

@@ -1,20 +1,8 @@
-var express = require('express')
+const express = require('express')
+const v1 = require('./routes/v1/routes.js')
 
-var app = express()
-const users = [
-    {
-        nom: 'Patrick',
-        age: 55
-    },
-    {
-        nom: 'Jean-Louis',
-        age: 32
-    }
-]
+const app = express()
 
-app.get('/users', function(req, res) {
-    res.setHeader('Content-Type', 'text/plain')
-    res.send(JSON.stringify(users))
-})
+app.use('/v1', v1)
 
 app.listen(3000)

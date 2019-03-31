@@ -17,3 +17,6 @@ app.use('/v1/users', usersRouter(usersModel))
  * Listen on provided port, on all network interfaces.
  */
 app.listen(port)
+
+// For unit tests
+exports.app = app

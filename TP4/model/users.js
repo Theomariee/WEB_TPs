@@ -1,6 +1,6 @@
 const uuidv1 = require('uuid/v1')
 
-const users = [
+let users = [
     {
         id: '45745c60-7b1a-11e8-9c9c-2d42b21b1a3e',
         name: 'Pedro Ramirez',
@@ -66,6 +66,18 @@ const remove = (id) => {
     }
 }
 
+const reset = () => {
+    users =
+    [
+        {
+            id: '45745c60-7b1a-11e8-9c9c-2d42b21b1a3e',
+            name: 'Pedro Ramirez',
+            login: 'pedro',
+            age: 44
+        }
+    ]
+}
+
 function validateUser(user) {
     let result = true
     if (user && user.id && user.login && user.name) {
@@ -79,3 +91,4 @@ exports.getAll = getAll
 exports.add = add
 exports.update = update
 exports.remove = remove
+exports.reset = reset

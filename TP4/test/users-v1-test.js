@@ -8,11 +8,18 @@ const usersModel = require('../model/users')
 
 const expect = chai.expect
 const assert = chai.assert
-const should = chai.should
+const should = chai.should()
 const requester = chai.request(app).keepOpen()
 
 
 describe('Users tests', () => {
+  // Empty all users stored before running tests
+  beforeEach((done) => {
+    usersModel.remove({}, (err) => {
+      done()
+    })
+  })
+
   // GET /v1/users
   it('should list ALL users on /v1/users GET', (done) => {
     requester
@@ -25,6 +32,8 @@ describe('Users tests', () => {
 
   // POST /v1/users
   it('should add a SINGLE user on /v1/users POST'), (done) => {
+
+    // New user to insert
     let user = {
         name: 'Sanchez El Pueblo',
         login: 'sanchezpueb',

@@ -1,10 +1,10 @@
 const express = require('express')
 const bp = require('body-parser')
+
 const mod = require('../../modules/module.js')
 
-
 let router = express.Router()
-let module = new mod.Module()
+let access = new mod.Module()
 
 
 router.use(bp.json())
@@ -14,12 +14,12 @@ router.use(bp.urlencoded({
 
 // Get list of all users 
 router.get('/users', function(req, res) {
-    res.send(module.getAll())
+    res.send(access.getAll())
 })
 
 // Get user with specific id
 router.get('/users/:id', function(req, res) {
-    const user = module.get(req.params.id)
+    const user = access.get(req.params.id)
     if(!user) {
         res.send('The id specified does not correspond to any user.')
     }
@@ -29,7 +29,7 @@ router.get('/users/:id', function(req, res) {
 // Create a new user with the given params in the req.body
 router.post('/users', function(req, res){
     const newUser = req.body
-    const newUuid = module.add(newUser)
+    const newUuid = access.add(newUser)
     if(!newUuid) {
         // TODO - Manage errors
         res.send('Error.')
@@ -42,7 +42,7 @@ router.patch('/users/:id', function(req, res) {
     const patchUser = req.body
     const userIdToPatch = req.params.id
 
-    if(!module.update(userIdToPatch, patchUser)) {
+    if(!access.update(userIdToPatch, patchUser)) {
         // TODO - Manage errors
         res.send('Error.')
     }
@@ -52,7 +52,7 @@ router.patch('/users/:id', function(req, res) {
 
 router.delete('/users/:id', function(req, res) {
     const userIdToRemove = req.params.id
-    if(!module.remove(userIdToRemove)) {
+    if(!access.remove(userIdToRemove)) {
         // TODO - Manage errors
         res.send('Error.')
     }

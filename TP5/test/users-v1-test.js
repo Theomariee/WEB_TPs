@@ -34,15 +34,17 @@ describe("Users tests", () => {
     chai
       .request(app)
       .post("/v1/users")
-      .send({ name: "Robert", login: "roro", age: 24 })
+      .send({ name: "Robert", login: "roro", password: "pwdroro", age: 24 })
       .end((err, res) => {
         res.should.have.status(201)
         res.should.be.json
         res.body.should.be.a("object")
         res.body.should.have.property("id")
         res.body.should.have.property("name")
+        res.body.should.have.property("password")
         res.body.name.should.equal("Robert")
         res.body.login.should.equal("roro")
+        res.body.password.should.equal("pwdroro")
         res.body.age.should.equal(24)
         done()
       })
@@ -51,7 +53,7 @@ describe("Users tests", () => {
     chai
       .request(app)
       .patch("/v1/users/45745c60-7b1a-11e8-9c9c-2d42b21b1a3e")
-      .send({ name: "Robertinio", age: 45 })
+      .send({ name: "Robertinio", password: "pwdroronew", age: 45 })
       .end((err, res) => {
         res.should.have.status(200)
         res.should.be.json
@@ -60,6 +62,7 @@ describe("Users tests", () => {
         res.body.id.should.equal("45745c60-7b1a-11e8-9c9c-2d42b21b1a3e")
         res.body.name.should.equal("Robertinio")
         res.body.login.should.equal("pedro")
+        res.body.password.should.equal("pwdroronew")
         res.body.age.should.equal(45)
         done()
       })
@@ -71,6 +74,34 @@ describe("Users tests", () => {
       .end((err, res) => {
         res.should.have.status(200)
         done()
+      })
+  })
+  it("should login with SUCCESS on /v1/auth/login POST", done => {
+    chai
+      .request(app)
+      .post("/v1/auth/login")
+      .send({login: "roro", password: "pwdroronew"})
+      .end((err, res) => {
+        res.should.have.status(200)
+        res.should.be.json
+        res.body.should.be.a("object")
+        res.body.should.have.property("access_token")
+        res.body.should.have.property("expirity")
+      })
+  })
+  it("should login with FAILURE on /v1/auth/login POST", done => {
+    chai
+      .request(app)
+      .post("/v1/auth/login")
+      .send({login: "roro", password: "wrongpwd"})
+      .end((err, res) => {
+        res.should.have.status(401)
+        res.should.be.json
+        res.body.should.be.a("object")
+        res.body.should.have.property("code")
+        res.body.should.have.property("type")
+        res.body.should.have.property("message")
+        res.body.code.should.equal(0)
       })
   })
 })

@@ -1,7 +1,7 @@
 const uuidv1 = require('uuid/v1')
 const bcrypt = require('bcrypt')
 
-let SALT = "hAsHjXt"
+let SALT = "$2b$10$opq1qmtF7TvE.xMc4uON/e"
 
 const users = [
     {
@@ -109,7 +109,7 @@ function validateUser(user) {
 }
 
 function hashPlainPassword(pwd) {
-    bcrypt.hash(pwd, 10, (err, hash) => {
+    bcrypt.hash(pwd, SALT).then(function (hash) {
         return hash
     })
 }

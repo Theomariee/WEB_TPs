@@ -1,25 +1,32 @@
 const uuidv1 = require('uuid/v1')
+const bcrypt = require('bcrypt')
+
+let SALT = "hAsHjXt"
 
 const users = [
     {
         id: '45745c60-7b1a-11e8-9c9c-2d42b21b1a3e',
         name: 'Pedro Ramirez',
         login: 'pedro',
+        password: hashPlainPassword('pwdpedro'),
         age: 44
     }, {
         id: '456897d-98a8-78d8-4565-2d42b21b1a3e',
         name: 'Jesse Jones',
         login: 'jesse',
+        password: hashPlainPassword('pwdjesse'),
         age: 48
     }, {
         id: '987sd88a-45q6-78d8-4565-2d42b21b1a3e',
         name: 'Rose Doolan',
         login: 'rose',
+        password: hashPlainPassword('pwdrose'),
         age: 36
     }, {
         id: '654de540-877a-65e5-4565-2d42b21b1a3e',
         name: 'Sid Ketchum',
         login: 'sid',
+        password: hashPlainPassword('pwdsid'),
         age: 56
     }
 ]
@@ -38,6 +45,7 @@ const getAll = () => {
 const add = (user) => {
     const newUser = {
         ...user,
+        password: hashPlainPassword(user.password),
         id: uuidv1()
     }
     if (validateUser(newUser)) {
@@ -54,9 +62,19 @@ const update = (id, newUserProperties) => {
     if (usersFound.length === 1) {
         const oldUser = usersFound[0]
 
-        const newUser = {
-            ...oldUser,
-            ...newUserProperties
+        if(newUserProperties['password']) {
+            const newUser = {
+                ...oldUser,
+                ...newUserProperties,
+                password: hashPlainPassword(newUserProperties.password)
+            } 
+        }
+
+        else {
+            const newUser = {
+                ...oldUser,
+                ...newUserProperties
+            }
         }
 
         // Control data to patch
@@ -84,10 +102,16 @@ const remove = (id) => {
 
 function validateUser(user) {
     let result = true
-    if (user && user.id && user.login && user.name) {
+    if (user && user.id && user.login && user.name && user.password) {
         result = true
     }
     return result
+}
+
+function hashPlainPassword(pwd) {
+    bcrypt.hash(pwd, 10, (err, hash) => {
+        return hash
+    })
 }
 
 exports.get = get

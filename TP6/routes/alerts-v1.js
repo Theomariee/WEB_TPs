@@ -5,7 +5,7 @@ let alertsModel = undefined
 
 /* Control alertsModel initialisation */
 router.use((req, res, next) => {
-    if (!usersModel) {
+    if (!alertsModel) {
         res
             .status(500)
             .json({message: `model not initialised`})
@@ -18,13 +18,13 @@ router.get('/:id', function (req, res, next) {
     const id = req.params.id
     if (id) {
         try {
-            const userFound = usersModel.get(id)
-            if (userFound) {
-                res.json(userFound)
+            const alertFound = alertsModel.get(id)
+            if (alertFound) {
+                res.json(alertFound)
             } else {
                 res
                     .status(404)
-                    .json({message: `User not found with id ${id}`})
+                    .json({message: `Alert not found`})
             }
         } catch (exc) {
             res
@@ -35,21 +35,26 @@ router.get('/:id', function (req, res, next) {
     } else {
         res
             .status(400)
-            .json({message: `Wrong parameter`})
+            .json({message: `Invalid ID supplied`})
     }
+})
+
+/* GET alerts by searching for criterias */
+router.get('/search', function (req, res, next) {
+  // TODO
 })
 
 /* Add a new alert. */
 router.post('/', function (req, res, next) {
-    const newUser = req.body
+    const newAlert = req.body
 
-    if (newUser) {
+    if (newAlert) {
         try {
-            const user = usersModel.add(newUser)
+            const alert = alertsModel.add(newAlert)
             req
                 .res
-                .status(201)
-                .send(user)
+                .status(200)
+                .send(`Successful operation`)
         } catch (exc) {
             res
                 .status(400)
@@ -57,43 +62,43 @@ router.post('/', function (req, res, next) {
         }
     } else {
         res
-            .status(400)
-            .json({message: `Wrong parameters`})
+            .status(405)
+            .send(`Invalid input`)
     }
 })
 
 /* Update a specific alert */
 router.patch('/:id', function (req, res, next) {
     const id = req.params.id
-    const newUserProperties = req.body
+    const newAlertProperties = req.body
 
-    if (id && newUserProperties) {
+    if (id && newAlertProperties) {
         try {
             if (id && newUserProperties) {
-                const updated = usersModel.update(id, newUserProperties)
+                const updated = alertsModel.update(id, newAlertProperties)
                 res
                     .status(200)
-                    .json(updated)
+                    .send(`Succesfull operation`)
             } else {
                 res
-                    .status(400)
-                    .json({message: `Wrong parameter`})
+                    .status(405)
+                    .json(`Invalid input`)
             }
         } catch (exc) {
-            if (exc.message === 'user.not.found') {
+            if (exc.message === 'alert.not.found') {
                 res
-                    .status(404)
-                    .json({message: `User not found with id ${id}`})
-            } else if (exc.message === 'user.not.valid') {
+                    .status(405)
+                    .send(`Invalid ID supplied`)
+            } else if (exc.message === 'alert.not.valid') {
                 res
-                    .status(400)
-                    .json({message: `Invalid user data`})
+                    .status(405)
+                    .send(`Invalid input`)
             }
         }
     } else {
         res
-            .status(400)
-            .json({message: `Wrong parameters`})
+          .status(405)
+          .send(`Invalid input`)
     }
 })
 
@@ -102,36 +107,36 @@ router.delete('/:id', function (req, res, next) {
     const id = req.params.id
     if (id) {
         try {
-            usersModel.remove(id)
+            alertsModel.remove(id)
             req
                 .res
                 .status(200)
                 .end()
         } catch (exc) {
-            if (exc.message === 'user.not.found') {
+            if (exc.message === 'alert.not.found') {
                 res
                     .status(404)
-                    .json({message: `User not found with id ${id}`})
+                    .send(`Alert not found`)
             } else {
                 res
                     .status(400)
-                    .json({message: exc.message})
+                    .send(`Invalid ID supplied`)
             }
         }
     } else {
         res
             .status(400)
-            .json({message: `Wrong parameter`})
+            .send(`Invalid ID supplied`)
     }
 })
 
-/* GET all alerts */
+/* GET all alerts 
 router.get('/', function (req, res, next) {
-    res.json(usersModel.getAll())
-})
+    res.json(alertsModel.getAll())
+}) */
 
 /** return a closure to initialize model */
 module.exports = (model) => {
-    usersModel = model
+    alertsModel = model
     return router
 }

@@ -23,7 +23,7 @@ const AlertModel = new mongoose.Schema({
         unique: true
     },
     type: {
-        type: Schema.ObjectId,
+        type: mongoose.Schema.ObjectId,
         ref: 'Category',
         required: true,
         unique: false
@@ -34,7 +34,7 @@ const AlertModel = new mongoose.Schema({
         unique: false
     },
     status: {
-        type: Schema.ObjectId,
+        type: mongoose.Schema.ObjectId,
         ref: 'Status',
         required: true,
         unique: false
@@ -120,8 +120,3 @@ exports.add = add
 exports.update = update
 exports.remove = remove
 exports.initModels = initModels
-
-exports.Status = Status
-exports.Category = Category
-exports.Error = Error
-exports.Alert = Alert

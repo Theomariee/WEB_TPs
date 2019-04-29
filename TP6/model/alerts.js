@@ -1,117 +1,117 @@
-const uuidv1 = require('uuid/v1')
-const bcrypt = require('bcrypt')
+const mongoose = require('mongoose')
 
-let SALT = "$2b$10$opq1qmtF7TvE.xMc4uON/e"
-
-const users = [
-    {
-        id: '45745c60-7b1a-11e8-9c9c-2d42b21b1a3e',
-        name: 'Pedro Ramirez',
-        login: 'pedro',
-        password: hashPlainPassword('pwdpedro'),
-        age: 44
-    }, {
-        id: '456897d-98a8-78d8-4565-2d42b21b1a3e',
-        name: 'Jesse Jones',
-        login: 'jesse',
-        password: hashPlainPassword('pwdjesse'),
-        age: 48
-    }, {
-        id: '987sd88a-45q6-78d8-4565-2d42b21b1a3e',
-        name: 'Rose Doolan',
-        login: 'rose',
-        password: hashPlainPassword('pwdrose'),
-        age: 36
-    }, {
-        id: '654de540-877a-65e5-4565-2d42b21b1a3e',
-        name: 'Sid Ketchum',
-        login: 'sid',
-        password: hashPlainPassword('pwdsid'),
-        age: 56
+const CategoryModel = new mongoose.Schema({
+    type: {
+        type: String,
+        required: true,
+        unique: true
     }
-]
+})
+
+const StatusModel = new mongoose.Schema({
+    type: {
+        type: String,
+        required: true,
+        unique: true
+    }
+})
+
+const AlertModel = new mongoose.Schema({
+    id: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    type: {
+        type: Schema.ObjectId,
+        ref: 'Category',
+        required: true,
+        unique: false
+    },
+    label: {
+        type: String,
+        required: true,
+        unique: false
+    },
+    status: {
+        type: Schema.ObjectId,
+        ref: 'Status',
+        required: true,
+        unique: false
+    },
+    from: {
+        type: Date,
+        required: true,
+        unique: false
+    },
+    to: {
+        type: Date,
+        required: true,
+        unique: false
+    },
+
+})
+
+const ErrorModel = new mongoose.Schema({
+    code: {
+        type: Number,
+        required: true,
+        unique: true
+    },
+    type: {
+        type: String,
+        required: true,
+        unique: false
+    },
+    message: {
+        type: String,
+        required: true,
+        unique: false
+    }
+})
+
+function initModels () {
+    let Alert = mongoose.model('Alert', AlertModel)
+    let Error = mongoose.model('Error', ErrorModel)
+    let Category = mongoose.model('Category', CategoryModel)
+    let Status = mongoose.model('Status', StatusModel)
+    
+    const categoryEnum = ['weather', 'sea', 'transport']
+    const statusEnum = ['warning', 'threat', 'danger', 'risk']
+    
+    Category.collection.insert(categoryEnum, onInsert)
+    Status.collection.insert(statusEnum, onInsert)
+    
+    function onInsert(err, docs) {
+        if(err) {
+    
+        } else {
+            console.log('Successfully stored.')
+        }
+    }
+}
 
 const get = (id) => {
-    const usersFound = users.filter((user) => user.id === id)
-    return usersFound.length >= 1
-        ? usersFound[0]
-        : undefined
+    return Alert.findOne(id)
 }
 
 const getAll = () => {
     return users
 }
 
-const add = (user) => {
-    const newUser = {
-        ...user,
-        password: hashPlainPassword(user.password),
-        id: uuidv1()
-    }
-    if (validateUser(newUser)) {
-        users.push(newUser)
-    } else {
-        throw new Error('user.not.valid')
-    }
-    return newUser
+const add = (alert) => {
+    const newAlert = new Alert(alert)
+    return newAlert.save()
+        .catch(err => (console.log(err)))
 }
 
 const update = (id, newUserProperties) => {
-    const usersFound = users.filter((user) => user.id === id)
-
-    if (usersFound.length === 1) {
-        const oldUser = usersFound[0]
-
-        if(newUserProperties['password']) {
-            const newUser = {
-                ...oldUser,
-                ...newUserProperties,
-                password: hashPlainPassword(newUserProperties.password)
-            } 
-        }
-
-        else {
-            const newUser = {
-                ...oldUser,
-                ...newUserProperties
-            }
-        }
-
-        // Control data to patch
-        if (validateUser(newUser)) {
-            // Object.assign permet d'éviter la suppression de l'ancien élément puis l'ajout
-            // du nouveau Il assigne à l'ancien objet toutes les propriétés du nouveau
-            Object.assign(oldUser, newUser)
-            return oldUser
-        } else {
-            throw new Error('user.not.valid')
-        }
-    } else {
-        throw new Error('user.not.found')
-    }
+   
 }
 
 const remove = (id) => {
-    const indexFound = users.findIndex((user) => user.id === id)
-    if (indexFound > -1) {
-        users.splice(indexFound, 1)
-    } else {
-        throw new Error('user.not.found')
-    }
-}
-
-function validateUser(user) {
-    let result = true
-    if (user && user.id && user.login && user.name && user.password) {
-        result = true
-    }
-    return result
-}
-
-function hashPlainPassword(pwd) {
-    bcrypt.hash(pwd, SALT).then(function (hash) {
-        return hash
-    })
+    return Alert.findOneAndDelete(id)
+        .catch(err => console.log(err))
 }
 
 exports.get = get
@@ -119,3 +119,9 @@ exports.getAll = getAll
 exports.add = add
 exports.update = update
 exports.remove = remove
+exports.initModels = initModels
+
+exports.Status = Status
+exports.Category = Category
+exports.Error = Error
+exports.Alert = Alert

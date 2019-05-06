@@ -26,12 +26,14 @@ const AlertSchema = new mongoose.Schema({
     from: {
         type: Date,
         required: true,
-        unique: false
+        unique: false,
+        default: Date.now
     },
     to: {
         type: Date,
         required: true,
-        unique: false
+        unique: false,
+        default: Date.now
     },
 
 }, { _id : false })
@@ -58,18 +60,15 @@ let Alert = mongoose.model('Alert', AlertSchema)
 let Error = mongoose.model('Error', ErrorSchema)
 
 const get = (id) => {
-    return Alert.findOne({
-        _id: id
-    })
-        .then(doc => (console.log(doc)))
-        .catch(err => (console.log(err)))
+    return Alert.findById(id)
 }
 
 const getFromSearch = (status) => {
-    return Alert.findOne({
-        status: status
+    return Alert.find({
+        status: {
+            $in : status
+        }
     })
-        .catch(err => (console.log(err)))
 }
 
 const add = (alert) => {
@@ -94,3 +93,4 @@ exports.getFromSearch = getFromSearch
 exports.add = add
 exports.update = update
 exports.remove = remove
+exports.Alert = Alert

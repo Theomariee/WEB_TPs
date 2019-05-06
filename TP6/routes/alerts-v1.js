@@ -13,21 +13,48 @@ router.use((req, res, next) => {
     next()
 })
 
+/* GET alerts by searching for criterias */
+router.get('/search', function (req, res, next) {
+    const statusList = alertsModel.Alert.schema.path('status').enumValues
+    const status = req.query.status && req.query.status.split(',')
+
+    function checkStatus(status) {
+        return !statusList.includes(status)
+    }
+
+    const wrongStatus = status.filter(checkStatus)
+
+    if(wrongStatus.length > 0) {
+        res
+            .status(400)
+            .json({message: `Invalid tag value`}) // TODO : remplacer par Error
+    }
+
+    else {
+        alertsModel.getFromSearch(status)
+            .then(function(alerts){
+                res
+                    .status(200)
+                    .json(alerts)
+            })
+    }
+})
+
 /* GET a specific alert by id */
 router.get('/:id', function (req, res, next) {
     const id = req.params.id
-    console.log("id: " + id)
     if (id) {
         try {
-            const alertFound = alertsModel.get(id)
-            if (alertFound) {
-                console.log(alertFound)
-                res.json(alertFound)
-            } else {
-                res
-                    .status(404)
-                    .json({message: `Alert not found`})
-            }
+            alertsModel.get(id)
+                .then(function(alertFound) {
+                    if (alertFound) {
+                        res.json(alertFound)
+                    } else {
+                        res
+                            .status(404)
+                            .json({message: `Alert not found`})
+                    }
+                })
         } catch (exc) {
             res
                 .status(400)
@@ -39,11 +66,6 @@ router.get('/:id', function (req, res, next) {
             .status(400)
             .json({message: `Invalid ID supplied`})
     }
-})
-
-/* GET alerts by searching for criterias */
-router.get('/search', function (req, res, next) {
-  // TODO
 })
 
 /* Add a new alert. */
@@ -131,20 +153,6 @@ router.delete('/:id', function (req, res, next) {
             .send(`Invalid ID supplied`)
     }
 })
-
-/*router.get('/', function (req, res, next) {
-    alertsModel.add({
-        type: 'weather',
-        label: 'Blabla',
-        status: 'warning',
-        from: Date.now(),
-        to: Date.now()
-    })
-    res 
-        .status(200)
-        .send(`Added succesfully`)
-    console.log('add fake alert')
-})*/
 
 /** return a closure to initialize model */
 module.exports = (model) => {

@@ -1,0 +1,16 @@
+# Default configuration file
+
+# -----------------------------------------------------------------------
+# Copy this file into ./config and name it "production.yml" | "development.yml"
+# Set NODE_ENV to either "production" or "development" to switch between configs
+# Default value will be "development"
+# -----------------------------------------------------------------------
+
+# Database address & credentials
+db_host: 127.0.0.1
+db_port: 27017
+db_name: alerts
+
+# Server address
+serv_host: 127.0.0.1
+serv_port: 5000

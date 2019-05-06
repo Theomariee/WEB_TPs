@@ -1,30 +1,14 @@
 const mongoose = require('mongoose')
+const uuidv4 = require('uuid/v4')
 
-const CategoryModel = new mongoose.Schema({
-    type: {
+const AlertSchema = new mongoose.Schema({
+    _id: {
         type: String,
         required: true,
-        unique: true
-    }
-})
-
-const StatusModel = new mongoose.Schema({
-    type: {
-        type: String,
-        required: true,
-        unique: true
-    }
-})
-
-const AlertModel = new mongoose.Schema({
-    id: {
-        type: String,
-        required: true,
-        unique: true
     },
     type: {
-        type: mongoose.Schema.ObjectId,
-        ref: 'Category',
+        type: String,
+        enum: ['sea', 'transport', 'weather'],
         required: true,
         unique: false
     },
@@ -34,8 +18,8 @@ const AlertModel = new mongoose.Schema({
         unique: false
     },
     status: {
-        type: mongoose.Schema.ObjectId,
-        ref: 'Status',
+        type: String,
+        enum: ['warning', 'threat', 'danger', 'risk'],
         required: true,
         unique: false
     },
@@ -50,9 +34,9 @@ const AlertModel = new mongoose.Schema({
         unique: false
     },
 
-})
+}, { _id : false })
 
-const ErrorModel = new mongoose.Schema({
+const ErrorSchema = new mongoose.Schema({
     code: {
         type: Number,
         required: true,
@@ -70,43 +54,34 @@ const ErrorModel = new mongoose.Schema({
     }
 })
 
-function initModels () {
-    let Alert = mongoose.model('Alert', AlertModel)
-    let Error = mongoose.model('Error', ErrorModel)
-    let Category = mongoose.model('Category', CategoryModel)
-    let Status = mongoose.model('Status', StatusModel)
-    
-    const categoryEnum = ['weather', 'sea', 'transport']
-    const statusEnum = ['warning', 'threat', 'danger', 'risk']
-    
-    Category.collection.insert(categoryEnum, onInsert)
-    Status.collection.insert(statusEnum, onInsert)
-    
-    function onInsert(err, docs) {
-        if(err) {
-    
-        } else {
-            console.log('Successfully stored.')
-        }
-    }
-}
+let Alert = mongoose.model('Alert', AlertSchema)
+let Error = mongoose.model('Error', ErrorSchema)
 
 const get = (id) => {
-    return Alert.findOne(id)
+    return Alert.findOne({
+        _id: id
+    })
+        .then(doc => (console.log(doc)))
+        .catch(err => (console.log(err)))
 }
 
-const getAll = () => {
-    return users
+const getFromSearch = (status) => {
+    return Alert.findOne({
+        status: status
+    })
+        .catch(err => (console.log(err)))
 }
 
 const add = (alert) => {
+    alert._id = uuidv4()
     const newAlert = new Alert(alert)
     return newAlert.save()
         .catch(err => (console.log(err)))
 }
 
-const update = (id, newUserProperties) => {
-   
+const update = (id, newAlertProperties) => {
+   return Alert.findByIdAndUpdate(id, newAlertProperties)
+        .catch(err => (console.log(err)))
 }
 
 const remove = (id) => {
@@ -115,8 +90,7 @@ const remove = (id) => {
 }
 
 exports.get = get
-exports.getAll = getAll
+exports.getFromSearch = getFromSearch
 exports.add = add
 exports.update = update
 exports.remove = remove
-exports.initModels = initModels

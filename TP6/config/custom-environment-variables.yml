@@ -1,0 +1,8 @@
+# Database address & credentials
+db_host: "HOST"
+db_port: "DBPORT"
+db_name: "DBNAME"
+
+# Server address
+serv_host: "SERVHOST"
+serv_port: "SERVPORT"

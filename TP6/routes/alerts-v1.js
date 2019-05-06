@@ -16,10 +16,12 @@ router.use((req, res, next) => {
 /* GET a specific alert by id */
 router.get('/:id', function (req, res, next) {
     const id = req.params.id
+    console.log("id: " + id)
     if (id) {
         try {
             const alertFound = alertsModel.get(id)
             if (alertFound) {
+                console.log(alertFound)
                 res.json(alertFound)
             } else {
                 res
@@ -130,10 +132,19 @@ router.delete('/:id', function (req, res, next) {
     }
 })
 
-/* GET all alerts 
-router.get('/', function (req, res, next) {
-    res.json(alertsModel.getAll())
-}) */
+/*router.get('/', function (req, res, next) {
+    alertsModel.add({
+        type: 'weather',
+        label: 'Blabla',
+        status: 'warning',
+        from: Date.now(),
+        to: Date.now()
+    })
+    res 
+        .status(200)
+        .send(`Added succesfully`)
+    console.log('add fake alert')
+})*/
 
 /** return a closure to initialize model */
 module.exports = (model) => {

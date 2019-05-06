@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
+const config = require('config')
 
-const server = '127.0.0.1:27017'
-const database = 'alerts'
+const server = config.get('serv_host') || '127.0.0.1'
+const database = config.get('db_name') || 'alerts'
 
 class Database {
   constructor() {

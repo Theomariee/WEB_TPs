@@ -30,7 +30,7 @@ router.get('/search', function (req, res, next) {
             .json({
                 "code": 0,
                 "type": "WRONG_ARGUMENT",
-                "message": "Invalid Tag Value"
+                "message": "Invalid tag value"
               })
     }
 
@@ -79,7 +79,7 @@ router.get('/:id', function (req, res, next) {
             .json({
                 "code": 0,
                 "type": "WRONG_ARGUMENT",
-                "message": "Invalid ID Supplied"
+                "message": "Invalid ID supplied"
               })
     }
 })
@@ -111,7 +111,7 @@ router.post('/', function (req, res, next) {
             .json({
                 "code": 0,
                 "type": "WRONG_ARGUMENT",
-                "message": "Invalid ID Supplied"
+                "message": "Invalid ID supplied"
               })
     }
 })

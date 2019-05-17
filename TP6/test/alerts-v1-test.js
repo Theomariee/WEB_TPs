@@ -7,7 +7,7 @@ chai.use(chaiHttp)
 
 var rightToken = ""
 var expiredToken = ""
-var wrongToken = ""
+var wrongToken = "wrong-token"
 
 describe('Alerts tests', () => {
   it('should create a new Alert on POST /v1/alerts with a valid token', done => {

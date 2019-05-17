@@ -27,7 +27,11 @@ router.get('/search', function (req, res, next) {
     if(wrongStatus.length > 0) {
         res
             .status(400)
-            .json({message: `Invalid tag value`}) // TODO : remplacer par Error
+            .json({
+                "code": 0,
+                "type": "WRONG_ARGUMENT",
+                "message": "Invalid Tag Value"
+              })
     }
 
     else {
@@ -52,19 +56,31 @@ router.get('/:id', function (req, res, next) {
                     } else {
                         res
                             .status(404)
-                            .json({message: `Alert not found`})
+                            .json({
+                                "code": 0,
+                                "type": "WRONG_ARGUMENT",
+                                "message": "Alert not found"
+                              })
                     }
                 })
         } catch (exc) {
             res
-                .status(400)
-                .json({message: exc.message})
+            .status(400)
+            .json({
+                "code": 0,
+                "type": "EXCEPTION_CAUGHT",
+                "message": exc.message
+              })
         }
 
     } else {
         res
             .status(400)
-            .json({message: `Invalid ID supplied`})
+            .json({
+                "code": 0,
+                "type": "WRONG_ARGUMENT",
+                "message": "Invalid ID Supplied"
+              })
     }
 })
 
@@ -82,12 +98,21 @@ router.post('/', function (req, res, next) {
         } catch (exc) {
             res
                 .status(400)
-                .json({message: exc.message})
+                .json({
+                    "code": 0,
+                    "type": "EXCEPTION_CAUGHT",
+                    "message": exc.message
+                  })
         }
     } else {
         res
             .status(405)
             .send(`Invalid input`)
+            .json({
+                "code": 0,
+                "type": "WRONG_ARGUMENT",
+                "message": "Invalid ID Supplied"
+              })
     }
 })
 
@@ -103,6 +128,7 @@ router.patch('/:id', function (req, res, next) {
                 res
                     .status(200)
                     .send(`Succesfull operation`)
+                    .send(Alert)
             } else {
                 res
                     .status(405)

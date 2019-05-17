@@ -1,0 +1,12 @@
+# Development configuration file
+
+# Database address & credentials
+db_host: 127.0.0.1
+db_port: 27017
+db_name: alerts
+db_user: myusername
+db_password: mypassword
+
+# Server address
+serv_host: 127.0.0.1
+serv_port: 5000

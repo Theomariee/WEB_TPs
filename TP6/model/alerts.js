@@ -38,26 +38,7 @@ const AlertSchema = new mongoose.Schema({
 
 }, { _id : false })
 
-const ErrorSchema = new mongoose.Schema({
-    code: {
-        type: Number,
-        required: true,
-        unique: true
-    },
-    type: {
-        type: String,
-        required: true,
-        unique: false
-    },
-    message: {
-        type: String,
-        required: true,
-        unique: false
-    }
-})
-
 let Alert = mongoose.model('Alert', AlertSchema)
-let Error = mongoose.model('Error', ErrorSchema)
 
 const get = (id) => {
     return Alert.findById(id)

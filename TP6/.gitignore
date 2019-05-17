@@ -1,7 +1,7 @@
 # Ignore all files in the config folder except the default config file
 ./config/*
-!default.yml
-
+!./config/default.yml
+!./config/custom-environment-variables.yml
 
 # Logs
 logs

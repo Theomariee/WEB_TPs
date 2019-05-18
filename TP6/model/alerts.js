@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const uuidv4 = require('uuid/v4')
 
 const AlertSchema = new mongoose.Schema({
     _id: {
@@ -53,7 +52,6 @@ const getFromSearch = (status) => {
 }
 
 const add = (alert) => {
-    alert._id = uuidv4()
     const newAlert = new Alert(alert)
     newAlert.save()
         .catch(err => (console.log(err)))

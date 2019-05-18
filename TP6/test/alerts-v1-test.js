@@ -11,54 +11,56 @@ var wrongToken = "wrong-token"
 
 describe('Alerts tests', () => {
   describe('Tests with invalid token', () => {
-    describe('POST /alerts requests', () => {})
-    describe('GET /alerts/search requests', () => {})
+    describe('POST /alerts requests', () => {
+      it('should have an UNAUTHORIZED message on POST /v1/alerts with an invalid token', done => {
+        chai
+          .request(app)
+          .post('/v1/alerts')
+          .set('Authorization', 'Bearer ' + wrongToken)
+          .send({
+            type: "sea",
+            label: "My own Alert",
+            status: "warning",
+            from: Date.now(),
+            to: Date.now() 
+          })
+          .end((err, res) => {
+            res.should.have.status(401)
+            res.should.be.json
+            done()
+          })
+      })
+    })
+    describe('GET /alerts/search requests', () => {
+      it('should have an UNAUTHORIZED message on GET /v1/alerts/search with an invalid token', done => {
+        chai
+          .request(app)
+          .post('/v1/alerts')
+          .set('Authorization', 'Bearer ' + wrongToken)
+          .send({
+            type: "sea",
+            label: "My own Alert",
+            status: "warning",
+            from: Date.now(),
+            to: Date.now() 
+          })
+          .end((err, res) => {
+            res.should.have.status(401)
+            res.should.be.json
+            done()
+          })
+      })
+    })
     describe('GET /alerts/{alertId} requests', () => {})
     describe('PUT /alerts/{alertId} requests', () => {})
     describe('DELETE /alerts/{alertId} requests', () => {})
-    it('should have an UNAUTHORIZED message on POST /v1/alerts with an invalid token', done => {
-      chai
-        .request(app)
-        .post('/v1/alerts')
-        .set('Authorization', 'Bearer ' + wrongToken)
-        .send({
-          type: "sea",
-          label: "My own Alert",
-          status: "warning",
-          from: Date.now(),
-          to: Date.now() 
-        })
-        .end((err, res) => {
-          res.should.have.status(401)
-          res.should.be.json
-          done()
-        })
-    })
-    it('should have an UNAUTHORIZED message on GET /v1/alerts/search with an invalid token', done => {
-      chai
-        .request(app)
-        .post('/v1/alerts')
-        .set('Authorization', 'Bearer ' + wrongToken)
-        .send({
-          type: "sea",
-          label: "My own Alert",
-          status: "warning",
-          from: Date.now(),
-          to: Date.now() 
-        })
-        .end((err, res) => {
-          res.should.have.status(401)
-          res.should.be.json
-          done()
-        })
-    })
   })
 
   // Valid token tests below
 
   describe('Tests with valid token', () => {
     describe('POST /alerts requests', () => {
-      it('should create a new Alert', done => {
+      it('should create and add a new Alert to the DB', done => {
         const myAlert = {
           type: "sea",
           label: "My own Alert",
@@ -87,7 +89,7 @@ describe('Alerts tests', () => {
       })
     })
     describe('GET /alerts/search requests', () => {
-      it('should get an array of Alerts with a list of status', done => {
+      it('should get an array of Alerts with multiple status given in parameter', done => {
         chai
         .request(app)
         .get('/v1/alerts/search?status=warnings')
@@ -121,7 +123,7 @@ describe('Alerts tests', () => {
       })
     })
     describe('GET /alerts/{alertId} requests', () => {
-      it('should return the corresponding alert to the ID', done =>{
+      it('should return the corresponding alert to the given ID', done =>{
         chai.request(app)
           .get('/v1/alerts/d57433bd-3a27-45a0-bf9f-720b8cf3f855')
           .set('Authorization', 'Bearer' + rightToken)
@@ -139,8 +141,9 @@ describe('Alerts tests', () => {
           })
       })
       it('should return an error 404 if the ID doesn\'t exist', done =>{
+        const alertID = `/d57433bd-3a27-45a0-bf9f-720b8cf3f845`
         chai.request(app)
-          .get('/v1/alerts/d57433bd-3a27-45a0-bf9f-720b8cf3f845')
+          .get('/v1/alerts' + alertID)
           .set('Authorization', 'Bearer' + rightToken)
           .end((err, res) => {
             res.should.have.status(404)
@@ -154,8 +157,11 @@ describe('Alerts tests', () => {
           })
       })
       it('should return an error 400 if there is no ID given', done =>{
+        
+        const alertID = "?id"
+
         chai.request(app)
-          .get('/v1/alerts/')
+          .get('/v1/alerts' + alertID)
           .set('Authorization', 'Bearer' + rightToken)
           .end((err, res) => {
             res.should.have.status(400)

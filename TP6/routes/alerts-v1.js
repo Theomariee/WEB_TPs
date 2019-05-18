@@ -1,5 +1,7 @@
 const express = require('express')
 const router = express.Router()
+const uuidv4 = require('uuid/v4')
+
 
 let alertsModel = undefined
 
@@ -52,6 +54,7 @@ router.get('/:id', function (req, res, next) {
             alertsModel.get(id)
                 .then(function(alertFound) {
                     if (alertFound) {
+                        alertFound["message"] = `Successful operation`
                         res.json(alertFound)
                     } else {
                         res
@@ -59,7 +62,7 @@ router.get('/:id', function (req, res, next) {
                             .json({
                                 "code": 0,
                                 "type": "WRONG_ARGUMENT",
-                                "message": "Alert not found"
+                                "message": `Alert not found`
                               })
                     }
                 })
@@ -88,7 +91,8 @@ router.post('/', function (req, res, next) {
     const newAlert = req.body
     if (newAlert) {
         try {
-           alertsModel.add(newAlert)
+            newAlert["_id"] = uuidv4()
+            alertsModel.add(newAlert)
         } catch (exc) {
             res
                 .status(400)
@@ -118,36 +122,53 @@ router.post('/', function (req, res, next) {
 /* Update a specific alert */
 router.patch('/:id', function (req, res, next) {
     const id = req.params.id
-    const newAlertProperties = req.body
+    const newAlert = req.body
 
-    if (id && newAlertProperties) {
+    if (id && newAlert) {
         try {
             if (id && newUserProperties) {
-                const updated = alertsModel.update(id, newAlertProperties)
+                alertsModel.update(id, newAlert)
+                const freshAlert = alertsModel.get(id)
+                freshAlert["message"] = `Successful operation`
                 res
                     .status(200)
-                    .send(`Succesfull operation`)
-                    .send(Alert)
+                    .json(freshAlert)
             } else {
                 res
                     .status(405)
-                    .json(`Invalid input`)
+                    .json({
+                            "code": 0,
+                            "type": "WRONG_ARGUMENT",
+                            "message": `Invalid input`
+                          })
             }
         } catch (exc) {
             if (exc.message === 'alert.not.found') {
                 res
                     .status(405)
-                    .send(`Invalid ID supplied`)
+                    .json({
+                        "code": 0,
+                        "type": "WRONG_ARGUMENT",
+                        "message": `Invalid ID supplied`
+                      })
             } else if (exc.message === 'alert.not.valid') {
                 res
                     .status(405)
-                    .send(`Invalid input`)
+                    .json({
+                        "code": 0,
+                        "type": "WRONG_ARGUMENT",
+                        "message": `Invalid input`
+                      })
             }
         }
     } else {
         res
           .status(405)
-          .send(`Invalid input`)
+          .json({
+            "code": 0,
+            "type": "WRONG_ARGUMENT",
+            "message": `Invalid input`
+          })
     }
 })
 
@@ -165,17 +186,29 @@ router.delete('/:id', function (req, res, next) {
             if (exc.message === 'alert.not.found') {
                 res
                     .status(404)
-                    .send(`Alert not found`)
+                    .json({
+                        "code": 0,
+                        "type": "WRONG_ARGUMENT",
+                        "message": `Alert not found`
+                      })
             } else {
                 res
                     .status(400)
-                    .send(`Invalid ID supplied`)
+                    .json({
+                        "code": 0,
+                        "type": "WRONG_ARGUMENT",
+                        "message": `Invalid ID supplied`
+                      })
             }
         }
     } else {
         res
             .status(400)
-            .send(`Invalid ID supplied`)
+            .json({
+                "code": 0,
+                "type": "WRONG_ARGUMENT",
+                "message": `Invalid ID supplied`
+              })
     }
 })
 

@@ -53,9 +53,12 @@ describe('Alerts tests', () => {
         })
     })
   })
+
+  // Valid token tests below
+
   describe('Tests with valid token', () => {
     describe('POST /alerts requests', () => {
-      it('should create a new Alert with a valid token', done => {
+      it('should create a new Alert', done => {
         const myAlert = {
           type: "sea",
           label: "My own Alert",
@@ -78,6 +81,7 @@ describe('Alerts tests', () => {
             res.body.should.have.property('status')
             res.body.should.have.property('from')
             res.body.should.have.property('to')
+            res.body.message.should.equal('Successful operation')
             done()
           })
       })
@@ -165,7 +169,9 @@ describe('Alerts tests', () => {
           })
       })
     })
-    describe('PUT /alerts/{alertId} requests', () => {})
+    describe('PUT /alerts/{alertId} requests', () => {
+
+    })
     describe('DELETE /alerts/{alertId} requests', () => {})
 
     

@@ -72,7 +72,6 @@ router.get('/:id', function (req, res, next) {
                 "message": exc.message
               })
         }
-
     } else {
         res
             .status(400)
@@ -87,14 +86,9 @@ router.get('/:id', function (req, res, next) {
 /* Add a new alert. */
 router.post('/', function (req, res, next) {
     const newAlert = req.body
-
     if (newAlert) {
         try {
-            const alert = alertsModel.add(newAlert)
-            req
-                .res
-                .status(200)
-                .send(`Successful operation`)
+           alertsModel.add(newAlert)
         } catch (exc) {
             res
                 .status(400)
@@ -104,6 +98,11 @@ router.post('/', function (req, res, next) {
                     "message": exc.message
                   })
         }
+        newAlert["message"] = `Successful operation`
+           req 
+                .res
+                .status(200)
+                .json(newAlert)
     } else {
         res
             .status(405)

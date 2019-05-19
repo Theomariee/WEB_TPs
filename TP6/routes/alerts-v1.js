@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const uuidv4 = require('uuid/v4')
 
-
 let alertsModel = undefined
 
 /* Control alertsModel initialisation */
@@ -89,7 +88,7 @@ router.get('/:id', function (req, res, next) {
 /* Add a new alert. */
 router.post('/', function (req, res, next) {
     const newAlert = req.body
-    if (newAlert) {
+    if (newAlert.type && newAlert.status && newAlert.label) {
         try {
             newAlert["_id"] = uuidv4()
             alertsModel.add(newAlert)
@@ -110,11 +109,10 @@ router.post('/', function (req, res, next) {
     } else {
         res
             .status(405)
-            .send(`Invalid input`)
             .json({
                 "code": 0,
                 "type": "WRONG_ARGUMENT",
-                "message": "Invalid ID supplied"
+                "message": "Invalid object supplied"
               })
     }
 })
@@ -176,31 +174,30 @@ router.patch('/:id', function (req, res, next) {
 router.delete('/:id', function (req, res, next) {
     const id = req.params.id
     if (id) {
-        try {
-            alertsModel.remove(id)
+            alertsModel.remove(id).then(() =>{
             req
-                .res
-                .status(200)
-                .end()
-        } catch (exc) {
-            if (exc.message === 'alert.not.found') {
-                res
-                    .status(404)
-                    .json({
-                        "code": 0,
-                        "type": "WRONG_ARGUMENT",
-                        "message": `Alert not found`
-                      })
-            } else {
-                res
-                    .status(400)
-                    .json({
-                        "code": 0,
-                        "type": "WRONG_ARGUMENT",
-                        "message": `Invalid ID supplied`
-                      })
-            }
-        }
+            .res
+            .status(200)
+            .json({"message" :`Alert removed from DB`})
+            }).catch ((exc) => {
+                if (exc.message === 'alert.not.found') {
+                    res
+                        .status(404)
+                        .json({
+                            "code": 0,
+                            "type": "WRONG_ARGUMENT",
+                            "message": `Alert not found`
+                        })
+                } else {
+                    res
+                        .status(400)
+                        .json({
+                            "code": 0,
+                            "type": "WRONG_ARGUMENT",
+                            "message": `Invalid ID supplied`
+                        })
+                }
+            })
     } else {
         res
             .status(400)

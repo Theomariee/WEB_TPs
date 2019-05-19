@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const uuidv4 = require('uuid/v4')
 
 const AlertSchema = new mongoose.Schema({
     _id: {

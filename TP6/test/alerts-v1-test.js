@@ -6,8 +6,8 @@ chai.should()
 chai.use(chaiHttp)
 
 var rightToken = "right-token"
-var expiredToken = "expired-token"
-var wrongToken = "wrong-token"
+var expiredToken = rightToken + "expired"
+var wrongToken = rightToken + "wrong"
 
 describe('Alerts tests', () => {
   describe('Tests with invalid token', () => {
@@ -87,6 +87,44 @@ describe('Alerts tests', () => {
             done()
           })
       })
+        it('should NOT create an Alert if the body is empty - Error code 405 - Invalid object supplied', done => {
+          const myAlert = null;
+          chai
+            .request(app)
+            .post('/v1/alerts')
+            .set('Authorization', 'Bearer ' + rightToken)
+            .send(myAlert)
+            .end((err, res) => {
+              res.should.have.status(405)
+              res.should.be.json
+              res.body.should.be.a('object')
+              res.body.should.have.property('code')
+              res.body.should.have.property('type')
+              res.body.message.should.equal('Invalid object supplied')
+              done()
+            })
+        })
+        it('should NOT create an Alert if required properties are missing - Error code 405 - Invalid object supplied', done => {
+          const myAlert = {
+            type: "sea",
+            from: Date.now(),
+            to: Date.now() 
+          };
+          chai
+            .request(app)
+            .post('/v1/alerts')
+            .set('Authorization', 'Bearer ' + rightToken)
+            .send(myAlert)
+            .end((err, res) => {
+              res.should.have.status(405)
+              res.should.be.json
+              res.body.should.be.a('object')
+              res.body.should.have.property('code')
+              res.body.should.have.property('type')
+              res.body.message.should.equal('Invalid object supplied')
+              done()
+            })
+        })
     })
     describe('GET /alerts/search requests', () => {
       it('should get an array of Alerts with multiple status given in parameter', done => {
@@ -125,7 +163,7 @@ describe('Alerts tests', () => {
     describe('GET /alerts/{alertId} requests', () => {
       it('should return the corresponding alert to the given ID', done =>{
         chai.request(app)
-          .get('/v1/alerts/d57433bd-3a27-45a0-bf9f-720b8cf3f855')
+          .get('/v1/alerts/08320a83-4b4e-4ee9-833b-2489aafcf998')
           .set('Authorization', 'Bearer' + rightToken)
           .end((err, res) => {
             res.should.have.status(200)
@@ -158,7 +196,7 @@ describe('Alerts tests', () => {
       })
       it('should return an error 400 if there is no ID given', done =>{
         
-        const alertID = "?id"
+        const alertID = ""
 
         chai.request(app)
           .get('/v1/alerts' + alertID)
@@ -178,8 +216,20 @@ describe('Alerts tests', () => {
     describe('PUT /alerts/{alertId} requests', () => {
 
     })
-    describe('DELETE /alerts/{alertId} requests', () => {})
-
-    
+    describe('DELETE /alerts/{alertId} requests', () => {
+     it('should remove the Alert from the DB', done => {
+       chai
+        .request(app)
+        .delete('/v1/alerts/147248c9-ebd7-4f8a-9f4e-8d7aa7575418')
+        .set('Authorization', 'Bearer ' + rightToken)
+        .end((err, res) => {
+          res.should.have.status(200)
+          res.should.be.a.json
+          res.should.be.a('object')
+          res.body.message.should.equal('Alert removed from DB')
+          done()
+        }) 
+      })
+    })
   })
 })

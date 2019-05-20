@@ -15,6 +15,35 @@ app.use(bodyParser.json())
 // Activation de Helmet
 app.use(helmet({noSniff: true}))
 
+app.use((req, res, next) => { 
+  if(!req.url.includes('/v1/auth/login') && !req.method == 'POST') {
+    let token = null
+    try {
+      token = req.headers.authorization.split(' ')[1]
+      authModel.verifyAuth(token).then(() => {
+        next()
+      }).catch(() => {
+        res
+        .status(401)
+        .json({
+          code: 0,
+          type: "ACCESS_DENIED",
+          message: "No valid JWT token given"
+        })
+      })
+    }
+    catch(err) {
+      res
+      .status(401)
+      .json({
+        code: 0,
+        type: "ACCESS_DENIED",
+        message: "No JWT token given"
+      })
+    }
+  } else next()
+})
+
 // On injecte le model dans le router. Ceci permet de supprimer la dépendance
 // directe entre le router et le modele
 app.use('/v1/users', usersRouter(usersModel))

@@ -16,45 +16,40 @@ router.use((req, res, next) => {
 /* GET a specific user by id */
 router.get('/:id', function (req, res, next) {
     const id = req.params.id
-    const userFound = undefined
     if (id) {
         try {
-            userFound = usersModel.get(id)
+            const userFound = usersModel.get(id)
+            res
+            .status(200)
+            .json(userFound)
         } catch (exc) {
             res
                 .status(400)
-                .json({message: exc.message})
+                .json({"message": exc.message})
         }
-        if (userFound) {
-            res.json(userFound)
-        } else {
-            res
-                .status(404)
-                .json({message: `User not found with id ${id}`})
-        }
-
+        
+        
     } else {
         res
             .status(400)
-            .json({message: `Wrong parameter`})
+            .json({"message": `Wrong parameter`})
     }
 })
 
 /* Add a new user. */
 router.post('/', function (req, res, next) {
     const newUser = req.body
-
-    if (newUser) {
+    if (newUser.id && newUser.name && newUser.age && newUser.login) {
         try {
-            const user = usersModel.add(newUser)
+           const addedUser = usersModel.add(newUser)
             req
                 .res
                 .status(201)
-                .send(user)
+                .json(addedUser)
         } catch (exc) {
             res
                 .status(400)
-                .json({message: exc.message})
+                .json({"message": exc.message})
         }
     } else {
         res

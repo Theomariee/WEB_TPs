@@ -11,7 +11,7 @@ Le **premier service** (trouvable au sein du dossier TP5 à la racine du projet)
 - Attribution et validation des tokens JWT
 Toutes les fonctionnalités implémentées sont accessibles 
 via requêtes orientées vers l'API REST dont la documentation est trouvable 
-[ici](https://github.com/stfanmichel/ESIR-TP5-SUBJECT/blob/master/Swagger_Authentication_API.yaml)
+[ici](https://github.com/stfanmichel/ESIR-TP5-SUBJECT/blob/master/Swagger_Authentication_API.yaml).
 
 ```
 git clone https://github.com/Theomariee/WEB_TPs.git

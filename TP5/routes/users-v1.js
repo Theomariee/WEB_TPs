@@ -16,20 +16,21 @@ router.use((req, res, next) => {
 /* GET a specific user by id */
 router.get('/:id', function (req, res, next) {
     const id = req.params.id
+    const userFound = undefined
     if (id) {
         try {
-            const userFound = usersModel.get(id)
-            if (userFound) {
-                res.json(userFound)
-            } else {
-                res
-                    .status(404)
-                    .json({message: `User not found with id ${id}`})
-            }
+            userFound = usersModel.get(id)
         } catch (exc) {
             res
                 .status(400)
                 .json({message: exc.message})
+        }
+        if (userFound) {
+            res.json(userFound)
+        } else {
+            res
+                .status(404)
+                .json({message: `User not found with id ${id}`})
         }
 
     } else {

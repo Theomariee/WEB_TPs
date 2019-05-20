@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 const userModel = require('./users')
+const bcrypt = require('bcrypt')
 
 const SECRET = 'secret'
 
@@ -24,13 +25,8 @@ const auth = (login, password) => {
 
   if(usersFound[0]) {
     const hash = usersFound[0].password
-    const isAuthorized = undefined
     
-    bcrypt.compare(password, hash).then(function(res) {
-      isAuthorized = res
-    })
-
-    if(isAuthorized) {
+    if(bcrypt.compareSync(password, hash)) {
       resultTemplate.isAuthorized = true
       const token = 
       jwt.sign(
@@ -41,20 +37,20 @@ const auth = (login, password) => {
         { 
           expiresIn: '1h'
         }
-        ) // End of jwt.sign
+      ) // End of jwt.sign
         
       resultTemplate.successObject.access_token = token 
       resultTemplate.successObject.expirity = jwt.decode(token).exp
     }
+
     else {
       resultTemplate.isAuthorized = false
       resultTemplate.failureObject.code = 0
-      resultTemplate.failureObject.type = "Log ins"
+      resultTemplate.failureObject.type = "LOGIN_ERROR"
       resultTemplate.failureObject.message = "Bad login."
     }
+    return resultTemplate
   }
-
-  return resultTemplate
 }
 
 const verifyAuth = (token) => {

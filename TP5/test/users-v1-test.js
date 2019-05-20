@@ -70,7 +70,6 @@ describe("Users tests", () => {
         res.body.should.have.property("password")
         res.body.name.should.equal("Robert")
         res.body.login.should.equal("roro")
-        res.body.password.should.equal("pwdroro")
         res.body.age.should.equal(24)
         done()
       })
@@ -108,13 +107,14 @@ describe("Users tests", () => {
     chai
       .request(app)
       .post("/v1/auth/login")
-      .send({login: "roro", password: "pwdroronew"})
+      .send({login: "rose", password: "pwdrose"})
       .end((err, res) => {
         res.should.have.status(200)
         res.should.be.json
         res.body.should.be.a("object")
         res.body.should.have.property("access_token")
         res.body.should.have.property("expirity")
+        done()
       })
   })
   it("should login with FAILURE on POST /v1/auth/login", done => {
@@ -130,6 +130,7 @@ describe("Users tests", () => {
         res.body.should.have.property("type")
         res.body.should.have.property("message")
         res.body.code.should.equal(0)
+        done()
       })
   })
   it("should return OK with correct authorization token on GET /v1/auth/verifyaccess", done => {
@@ -142,6 +143,7 @@ describe("Users tests", () => {
         res.should.be.json
         res.body.should.be.a("object")
         res.body.should.have.property("message")
+        done()
       })
   })
   it("should return UNAUTHORIZED with incorrect authorization token on GET /v1/auth/verifyaccess", done => {
@@ -157,6 +159,7 @@ describe("Users tests", () => {
         res.body.should.have.property("type")
         res.body.should.have.property("message")
         res.body.code.should.equal(0)
+        done()
     })
   })
 })

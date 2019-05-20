@@ -15,13 +15,12 @@ router.use((req, res, next) => {
 
 /* POST login credentials to log in */
 router.post('/login', function (req, res, next) {
-    const login = req.params.login
-    const password = req.params.password
+    const login = req.body.login
+    const password = req.body.password
 
     if (login && password) {
         try {
             const auth = authModel.auth(login, password)
-
             if (auth.isAuthorized) {
                 res
                     .json(auth.successObject)

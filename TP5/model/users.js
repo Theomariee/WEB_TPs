@@ -43,9 +43,10 @@ const getAll = () => {
 }
 
 const add = (user) => {
+    const hashedPwd = hashPlainPassword(user.password)
     const newUser = {
         ...user,
-        password: hashPlainPassword(user.password),
+        password: hashedPwd,
         id: uuidv1()
     }
     if (validateUser(newUser)) {
@@ -63,18 +64,12 @@ const update = (id, newUserProperties) => {
         const oldUser = usersFound[0]
 
         if(newUserProperties['password']) {
-            newUser = {
-                ...oldUser,
-                ...newUserProperties,
-                password: hashPlainPassword(newUserProperties.password)
-            } 
+            newUserProperties['password'] = hashPlainPassword(newUserProperties['password'])
         }
 
-        else {
-            newUser = {
-                ...oldUser,
-                ...newUserProperties
-            }
+        newUser = {
+            ...oldUser,
+            ...newUserProperties,
         }
 
         // Control data to patch
@@ -109,9 +104,7 @@ function validateUser(user) {
 }
 
 function hashPlainPassword(pwd) {
-    bcrypt.hash(pwd, SALT).then(function (hash) {
-        return hash
-    })
+    return bcrypt.hashSync(pwd, SALT)
 }
 
 exports.get = get

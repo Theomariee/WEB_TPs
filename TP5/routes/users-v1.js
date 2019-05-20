@@ -39,7 +39,7 @@ router.get('/:id', function (req, res, next) {
 /* Add a new user. */
 router.post('/', function (req, res, next) {
     const newUser = req.body
-    if (newUser.id && newUser.name && newUser.age && newUser.login) {
+    if (newUser.name && newUser.age && newUser.login) {
         try {
            const addedUser = usersModel.add(newUser)
             req

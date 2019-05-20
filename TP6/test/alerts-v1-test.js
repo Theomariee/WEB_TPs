@@ -79,7 +79,6 @@ describe('Alerts tests', () => {
             res.should.have.status(200)
             res.should.be.json
             res.body.should.be.a('object')
-            res.body.should.have.property('_id')
             res.body.should.have.property('type')
             res.body.should.have.property('label')
             res.body.should.have.property('status')
@@ -225,13 +224,52 @@ describe('Alerts tests', () => {
       })
     })
     describe('PUT /alerts/{alertId} requests', () => {
+      it('should replace all the properties the Alert from the DB by the new properties', done => {
+        const myAlert = {
+          type: "sea",
+          label: "Unmodified Alert",
+          status: "warning",
+          from: Date.now(),
+          to: Date.now() 
+        };
+        const newAlert = {
+          type: "transport",
+          label: "Modified Alert",
+          status: "threat",
+          from: Date.now(),
+          to: Date.now()
+        }
+        const newInsertion = Alert.add(myAlert) 
+        const idOfObjectInserted = newInsertion._id
+        chai 
+          .request(app)
+          .put('/v1/alerts/' + idOfObjectInserted)
+          .set('Authorization', 'Bearer ' + rightToken)
+          .send(newAlert)
+          .end((err, res) => {
+            res.should.have.status(200)
+            res.should.be.json
+            res.body.should.be.a('object')
+            res.body.message.should.equal(`Successful operation`)
+            done()
+          })
 
+      })
     })
     describe('DELETE /alerts/{alertId} requests', () => {
      it('should remove the Alert from the DB', done => {
+      const myAlert = {
+        type: "sea",
+        label: "My own Alert",
+        status: "warning",
+        from: Date.now(),
+        to: Date.now() 
+      };
+      const newInsertion = Alert.add(myAlert)
+      const idOfObjectInserted = newInsertion._id
        chai
         .request(app)
-        .delete('/v1/alerts/147248c9-ebd7-4f8a-9f4e-8d7aa7575418')
+        .delete('/v1/alerts/' + idOfObjectInserted)
         .set('Authorization', 'Bearer ' + rightToken)
         .end((err, res) => {
           res.should.have.status(200)

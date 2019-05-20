@@ -61,8 +61,9 @@ const add = (alert) => {
 }
 
 const update = (id, newAlertProperties) => {
-   return Alert.findByIdAndUpdate(id, newAlertProperties)
+   const updatedAlert = Alert.findByIdAndUpdate(id, newAlertProperties)
         .catch(err => (console.log(err)))
+    return updatedAlert
 }
 
 const remove = (id) => {

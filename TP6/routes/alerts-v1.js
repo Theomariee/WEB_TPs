@@ -90,7 +90,6 @@ router.post('/', function (req, res, next) {
     const newAlert = req.body
     if (newAlert.type && newAlert.status && newAlert.label) {
         try {
-            newAlert["_id"] = uuidv4()
             alertsModel.add(newAlert)
         } catch (exc) {
             res
@@ -118,28 +117,18 @@ router.post('/', function (req, res, next) {
 })
 
 /* Update a specific alert */
-router.patch('/:id', function (req, res, next) {
+router.put('/:id', function (req, res, next) {
     const id = req.params.id
     const newAlert = req.body
-
-    if (id && newAlert) {
+    console.log("put")
+    if (id && newAlert.type && newAlert.status && newAlert.label) {
         try {
-            if (id && newUserProperties) {
-                alertsModel.update(id, newAlert)
-                const freshAlert = alertsModel.get(id)
-                freshAlert["message"] = `Successful operation`
-                res
-                    .status(200)
-                    .json(freshAlert)
-            } else {
-                res
-                    .status(405)
-                    .json({
-                            "code": 0,
-                            "type": "WRONG_ARGUMENT",
-                            "message": `Invalid input`
-                          })
-            }
+            console.log("TRY")
+            const upAlert = alertsModel.update(id, newAlert)
+            console.log(upAlert.type)
+            res
+               .status(200)
+               .json({"message" : `Successful operation`})
         } catch (exc) {
             if (exc.message === 'alert.not.found') {
                 res

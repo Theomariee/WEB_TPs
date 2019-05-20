@@ -54,6 +54,7 @@ const getFromSearch = (status) => {
 
 const add = (alert) => {
     const newAlert = new Alert(alert)
+    newAlert._id = uuidv4()
     newAlert.save()
         .catch(err => (console.log(err)))
     return newAlert

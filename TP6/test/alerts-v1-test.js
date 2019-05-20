@@ -2,6 +2,8 @@ const chai = require ('chai')
 const chaiHttp = require('chai-http')
 const { app } = require('../app')
 
+const Alert = require('../model/alerts')
+
 chai.should()
 chai.use(chaiHttp)
 
@@ -162,8 +164,17 @@ describe('Alerts tests', () => {
     })
     describe('GET /alerts/{alertId} requests', () => {
       it('should return the corresponding alert to the given ID', done =>{
+        const myAlert = {
+          type: "sea",
+          label: "My own Alert",
+          status: "warning",
+          from: Date.now(),
+          to: Date.now() 
+        };
+        const newInsertion = Alert.add(myAlert)
+        const idOfObjectInserted = newInsertion._id
         chai.request(app)
-          .get('/v1/alerts/08320a83-4b4e-4ee9-833b-2489aafcf998')
+          .get('/v1/alerts/' + idOfObjectInserted)
           .set('Authorization', 'Bearer' + rightToken)
           .end((err, res) => {
             res.should.have.status(200)

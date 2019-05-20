@@ -58,12 +58,12 @@ const add = (user) => {
 
 const update = (id, newUserProperties) => {
     const usersFound = users.filter((user) => user.id === id)
-
+    const newUser = undefined
     if (usersFound.length === 1) {
         const oldUser = usersFound[0]
 
         if(newUserProperties['password']) {
-            const newUser = {
+            newUser = {
                 ...oldUser,
                 ...newUserProperties,
                 password: hashPlainPassword(newUserProperties.password)
@@ -71,7 +71,7 @@ const update = (id, newUserProperties) => {
         }
 
         else {
-            const newUser = {
+            newUser = {
                 ...oldUser,
                 ...newUserProperties
             }
@@ -101,7 +101,7 @@ const remove = (id) => {
 }
 
 function validateUser(user) {
-    let result = true
+    let result = false
     if (user && user.id && user.login && user.name && user.password) {
         result = true
     }

@@ -65,16 +65,11 @@ router.patch('/:id', function (req, res, next) {
 
     if (id && newUserProperties) {
         try {
-            if (id && newUserProperties) {
-                const updated = usersModel.update(id, newUserProperties)
-                res
-                    .status(200)
-                    .json(updated)
-            } else {
-                res
-                    .status(400)
-                    .json({message: `Wrong parameter`})
-            }
+            const updated = usersModel.update(id, newUserProperties)
+            res
+                .status(200)
+                .json(updated)
+
         } catch (exc) {
             if (exc.message === 'user.not.found') {
                 res

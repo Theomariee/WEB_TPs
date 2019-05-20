@@ -4,8 +4,8 @@ const userModel = require('./users')
 const SECRET = 'secret'
 
 const auth = (login, password) => {
-  const userList = userModel.getAll
-  const usersFound = users.filter((user) => user.login === login)
+  const userList = userModel.getAll()
+  const usersFound = userList.filter((user) => user.login === login)
   let resultTemplate = 
   {
     isAuthorized: undefined,

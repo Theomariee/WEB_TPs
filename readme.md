@@ -1,6 +1,6 @@
 # ESIR2 - Projet JXT
 
-Le but des dernières séances de travaux pratiques était de réaliser les micro-services décrit dans l'architecture ci-dessous.
+Le but des dernières séances de travaux pratiques était de réaliser les micro-services décrits dans l'architecture ci-dessous.
 
 <p align="center">
   <img src="https://github.com/stfanmichel/ESIR-TP5-SUBJECT/raw/master/sujetglobal.png" alt="Schéma global du projet"/>
@@ -20,6 +20,7 @@ npm i
 npm start
 npm test
 ```
+
 
 Le **deuxième service** (trouvable au sein du dossier TP6 à la racine du projet) 
 gère la manipulation (**C**reate, **R**etrieve,**U**pdate, **D**elete) d'objets *Alerts* avec les fonctionnalités métier imposées
